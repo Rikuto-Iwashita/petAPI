@@ -44,8 +44,15 @@ public class PetController {
     }
     
     @GetMapping("/pet/findByTags")
-    public String hello3() {
-    	return "hello /pet/findbytags";
+    public List<Pet> findPetByTag(@RequestParam(required = false) List<String> tagNames) {
+        if (tagNames == null || tagNames.isEmpty()) {
+            return pets;
+        }
+    	//指定されたステータスでフィルタリンぐ
+        return pets.stream()
+                .filter(pet -> pet.getTags().stream()
+                        .anyMatch(tag -> tagNames.contains(tag.getName())))
+                .collect(Collectors.toList());
     }
     
     @GetMapping("/pet/{petId}")
