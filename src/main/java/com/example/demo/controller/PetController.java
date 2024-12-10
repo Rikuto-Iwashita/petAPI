@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -33,7 +34,7 @@ public class PetController {
     
     
     @GetMapping("/pet/findByStatus")
-    public List<Pet> findPetsByStatus(@RequestParam(required=false) List<String> status) {
+    public List<Pet> findPetsByStatus(@RequestParam(required = false) List<String> status) {
     	if(status == null || status.isEmpty()) {
     		return pets;
     	}
@@ -56,7 +57,10 @@ public class PetController {
     }
     
     @GetMapping("/pet/{petId}")
-    public String hello4() {
-    	return "/pet/petid";
+    public Pet findPetById(@PathVariable Integer petId) {  	
+    	return pets.stream()
+    			.filter(pet -> pet.getId().equals(petId))
+    			.findFirst()
+    			.orElse(null);
     }
 }
