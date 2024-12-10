@@ -2,13 +2,29 @@ package com.example.demo.model;
 
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 public class Pet {
-	private Integer id;
-	private Category category;
-	private String name;
-	private List<String> photoUrls;
-	private List<Tag> tags;
-	private String status;
+    @JsonProperty("id")
+    private Integer id;
+    
+    @JsonProperty("category")
+    private Category category;
+    
+    @JsonProperty("name")
+    private String name;
+    
+    @JsonProperty("photoUrls")
+    private List<String> photoUrls;
+    
+    @JsonProperty("tags")
+    private List<Tag> tags;
+    
+    @JsonProperty("status")
+    private String status;
+	
+	public Pet() {
+	    // デフォルトコンストラクタ
+	}
 	
 	public Pet(Integer id, Category category, String name, List<String> photoUrls, List<Tag> tags, String status) {
 		super();
@@ -67,5 +83,18 @@ public class Pet {
 	public void setStatus(String status) {
 		this.status = status;
 	}
+	
+	@Override
+	public String toString() {
+	    return "Pet{" +
+	            "id=" + id +
+	            ", category=" + category +
+	            ", name='" + name + '\'' +
+	            ", photoUrls=" + photoUrls +
+	            ", tags=" + tags +
+	            ", status='" + status + '\'' +
+	            '}';
+	}
+
 	
 }
