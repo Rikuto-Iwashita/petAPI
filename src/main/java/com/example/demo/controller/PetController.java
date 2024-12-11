@@ -6,17 +6,18 @@ import java.util.stream.Collectors;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.demo.model.Category;
 import com.example.demo.model.Pet;
 import com.example.demo.model.Tag;
-
-import io.swagger.v3.oas.annotations.parameters.RequestBody;
 
 
 
@@ -81,11 +82,8 @@ public class PetController {
         return ResponseEntity.status(HttpStatus.CREATED).body(newPet);
     }
 
-
-
-
     @PostMapping("/pet/{petId}")
-    public ResponseEntity<Pet> updatePet(
+    public ResponseEntity<Pet> update(
             @PathVariable("petId") Integer petId,
             @RequestBody Pet updatedPetDetails) {
 
@@ -112,9 +110,40 @@ public class PetController {
         return ResponseEntity.status(HttpStatus.NOT_FOUND)
                              .body(null); // ペットが見つからない場合、404を返す
     }
+    
+    @PutMapping("/pet")
+    public ResponseEntity<Pet> updatePet(@RequestBody Pet updatedPet) {
+        
+    	System.out.println("Received Updated Pet: " + updatedPet);
+    	
+    	// 更新対象のペットをリストから検索
+        for (Pet pet : pets) {
+            if (pet.getId().equals(updatedPet.getId())) {
+                // 各フィールドを更新
+                pet.setName(updatedPet.getName());
+                pet.setCategory(updatedPet.getCategory());
+                pet.setPhotoUrls(updatedPet.getPhotoUrls());
+                pet.setTags(updatedPet.getTags());
+                pet.setStatus(updatedPet.getStatus());
+                
+                return ResponseEntity.ok(pet); // 更新されたペットを返却
+            }
+        }
+        System.out.println("Received Updated Pet: " + updatedPet);
+        // ペットが見つからない場合
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+    }
 
-    
-    
+    @DeleteMapping("/pet/{id}")
+    public ResponseEntity<String> deletePetId(@PathVariable Integer id){
+    	boolean removed = pets.removeIf(pet -> pet.getId().equals(id));
+    	
+    	if(removed) {
+    		return ResponseEntity.noContent().build();
+    	}else {
+    		return ResponseEntity.status(HttpStatus.NOT_FOUND).body("pet not found ID" + id);
+    	}
+    }
     
     
 }
